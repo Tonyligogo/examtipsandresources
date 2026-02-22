@@ -55,8 +55,8 @@ const Checkout = () => {
     const message = `Hi, I want to buy "${doc.title}" listed for ${price}.`;
     const encodedMessage = encodeURIComponent(message);
 
-    const whatsappNumber = "+254740455275";
-    const emailAddress = "tonyligogo@gmail.com";
+    const whatsappNumber = "+19144317855";
+    const emailAddress = "stephanoouma254@gmail.com";
 
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
     const emailUrl = `mailto:${emailAddress}?subject=${encodeURIComponent(

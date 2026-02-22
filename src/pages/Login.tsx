@@ -1,18 +1,15 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BookOpen, LogIn } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 const Login = () => {
   const [email, setEmail] = useState("student@demo.com");
   const [password, setPassword] = useState("password");
-  const { login, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(email, password);
     toast.success("Welcome back!");
     navigate("/");
   };
@@ -51,11 +48,10 @@ const Login = () => {
           </div>
           <button
             type="submit"
-            disabled={isLoading}
             className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-secondary font-medium text-secondary-foreground transition-all hover:brightness-110 disabled:opacity-60"
           >
             <LogIn className="h-4 w-4" />
-            {isLoading ? "Signing in…" : "Sign In"}
+            "Sign In"
           </button>
         </form>
 

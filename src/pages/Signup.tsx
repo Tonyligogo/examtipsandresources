@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BookOpen, UserPlus } from "lucide-react";
-import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 const Signup = () => {
@@ -9,12 +8,10 @@ const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState<"buyer" | "seller">("buyer");
-  const { signup, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signup(name, email, password, role);
     toast.success("Account created!");
     navigate("/");
   };
@@ -83,11 +80,10 @@ const Signup = () => {
           </div>
           <button
             type="submit"
-            disabled={isLoading}
             className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-secondary font-medium text-secondary-foreground transition-all hover:brightness-110 disabled:opacity-60"
           >
             <UserPlus className="h-4 w-4" />
-            {isLoading ? "Creating…" : "Create Account"}
+             "Create Account"
           </button>
         </form>
 

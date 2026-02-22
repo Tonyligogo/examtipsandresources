@@ -10,13 +10,13 @@ const Navbar = () => {
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
             <BookOpen className="h-5 w-5 text-primary-foreground" />
           </div>
-          <span className="font-display text-xl font-bold text-foreground">StudyDocs</span>
+          <span className="font-display text-md md:text-xl font-bold text-foreground">EXAM TIPS & RESOURCES</span>
         </Link>
 
         <div className="flex items-center gap-4">
           <Link
             to="/catalog"
-            className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+            className="text-sm font-medium hidden md:block"
           >
             Browse
           </Link>

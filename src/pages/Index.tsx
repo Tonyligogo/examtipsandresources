@@ -15,7 +15,7 @@ const Index = () => {
 
       {/* Hero */}
       <section className="relative overflow-hidden">
-        <div className="absolute">
+        <div className="absolute h-svh">
           <img src={heroBg} alt="" className="h-full w-full object-cover" />
           <div className="absolute inset-0 bg-linear-to-b from-primary/30 to-primary" />
         </div>
@@ -24,7 +24,7 @@ const Index = () => {
             <h1 className="mb-6 text-4xl font-bold leading-tight text-primary-foreground md:text-5xl lg:text-6xl animate-fade-in-up">
               Study Smarter, Not Harder
             </h1>
-            <p className="mb-8 text-lg text-primary-foreground/90 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
+            <p className="px-4 mb-8 text-lg text-primary-foreground/90 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
               Access high-quality study materials crafted by top educators.
               Preview before you buy, download instantly after purchase.
             </p>
@@ -83,14 +83,14 @@ const Index = () => {
       <section className="bg-primary">
         <div className="py-16 text-center">
           <h2 className="mb-4 text-3xl font-bold text-primary-foreground">Ready to ace your exams?</h2>
-          <p className="mx-auto mb-8 max-w-md text-primary-foreground/70">
+          <p className="mx-auto mb-8 max-w-md text-lg text-primary-foreground/80">
             Join thousands of students who are already studying smarter with our curated materials.
           </p>
           <Link
             to="/catalog"
             className="inline-flex h-12 items-center gap-2 rounded-xl bg-secondary px-8 font-medium text-secondary-foreground shadow-hero transition-all hover:brightness-110"
           >
-            Get Started <ArrowRight className="h-4 w-4" />
+            Browse Materials <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </section>
