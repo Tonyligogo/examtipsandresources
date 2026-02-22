@@ -10,12 +10,15 @@ import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
+import { CartProvider } from "./context/CartContext";
+import CartCheckout from "./pages/CartCheckout";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
+      <CartProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -24,11 +27,13 @@ const App = () => (
             <Route path="/catalog" element={<Catalog />} />
             <Route path="/document/:id" element={<DocumentDetail />} />
             <Route path="/checkout/:id" element={<Checkout />} />
+            <Route path="/cart-checkout" element={<CartCheckout />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        </CartProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );

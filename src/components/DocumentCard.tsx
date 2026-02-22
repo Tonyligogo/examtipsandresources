@@ -1,13 +1,21 @@
 import { Link } from "react-router-dom";
-import { FileText } from "lucide-react";
+import { Check, FileText, ShoppingCart } from "lucide-react";
 import type { Document } from "@/lib/data";
-import { Button } from "./ui/button";
+import { useCart } from "@/context/CartContext";
 
 interface DocumentCardProps {
   document: Document;
 }
 
 const DocumentCard = ({ document }: DocumentCardProps) => {
+  const { addItem, isInCart } = useCart();
+  const inCart = isInCart(document.id);
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem(document);
+  };
   return (
     <Link
       to={`/document/${document.id}`}
@@ -43,7 +51,14 @@ const DocumentCard = ({ document }: DocumentCardProps) => {
           <span className="font-display text-lg font-bold text-foreground">
             ${document.price.toFixed(2)}
           </span>
-          <Button className="cursor-pointer">Buy now</Button>
+          <button
+              onClick={handleAddToCart}
+              disabled={inCart}
+              className={`flex h-8 w-8 items-center justify-center rounded-md bg-primary text-white`}
+              title={inCart ? "In cart" : "Add to cart"}
+            >
+              {inCart ? <Check className="h-3.5 w-3.5" /> : <ShoppingCart className="h-3.5 w-3.5" />}
+            </button>
         </div>
       </div>
     </Link>

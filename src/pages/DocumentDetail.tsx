@@ -5,12 +5,15 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { documents } from "@/lib/data";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "@/context/CartContext";
+import { Button } from "@/components/ui/button";
 
 const DocumentDetail = () => {
   const { id } = useParams();
   const doc = documents.find((d) => d.id === id);
   const [showPreview, setShowPreview] = useState(false);
   const navigate = useNavigate();
+  const { addItem, isInCart } = useCart();
 
   if (!doc) {
     return (
@@ -28,6 +31,13 @@ const DocumentDetail = () => {
       </div>
     );
   }
+    const inCart = isInCart(doc.id);
+  
+    const handleAddToCart = (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      addItem(doc);
+    };
 
   const handlePurchase = () => {
     navigate(`/checkout/${doc.id}`);
@@ -127,17 +137,25 @@ const DocumentDetail = () => {
                 <p className="mt-1 text-sm text-muted-foreground">One-time purchase</p>
               </div>
 
-              <button
+              <Button
                 onClick={handlePurchase}
-                className="mb-3 cursor-pointer flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-secondary font-medium text-secondary-foreground transition-all hover:bg-primary hover:text-white"
+                className="mb-3 cursor-pointer flex w-full items-center justify-center gap-2 font-medium text-white"
               >
                 <Download className="h-4 w-4" />
                 Buy & Download
-              </button>
+              </Button>
 
               <p className="text-center text-xs text-muted-foreground">
                 Instant access after payment. Secure transaction.
               </p>
+
+               <Button
+              onClick={handleAddToCart}
+              disabled={inCart}
+              className="w-full mt-4 bg-secondary text-black hover:text-white"
+            >
+              {inCart ? "Already In cart" : "Add to cart"}
+            </Button>
 
               <div className="mt-6 space-y-3 border-t pt-6">
                 <div className="flex items-center justify-between text-sm">

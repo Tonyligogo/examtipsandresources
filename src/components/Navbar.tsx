@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { BookOpen} from "lucide-react";
+import CartDrawer from "./CartDrawer";
 
 const Navbar = () => {
 
@@ -20,6 +21,7 @@ const Navbar = () => {
           >
             Browse
           </Link>
+          <CartDrawer />
         </div>
       </div>
     </nav>
