@@ -46,12 +46,12 @@ const CartDrawer = () => {
                 >
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-primary">
                     <span className="text-xs font-bold text-primary-foreground">
-                      {doc.fileType}
+                      {doc.doc_type}
                     </span>
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-foreground">{doc.title}</p>
-                    <p className="text-xs text-muted-foreground">{doc.course}</p>
+                    <p className="text-xs text-muted-foreground">{doc.subject}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="font-display text-sm font-bold text-foreground">
