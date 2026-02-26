@@ -1,41 +1,16 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, FileText, Users, Shield } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowRight, FileText, Users, Shield, Loader2 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import DocumentCard from "@/components/DocumentCard";
-import { supabase } from "@/supabase/client";
 import heroBg from "@/assets/hero-bg.jpg";
-import type { Document } from "@/lib/data";
+import { useFeaturedDocuments } from "@/hooks/useDocuments";
 
 const Index = () => {
-  const [docs, setDocs] = useState<Document[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchDocs = async () => {
-      setLoading(true);
-
-      const { data, error } = await supabase
-        .from("documents")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(8);
-
-      if (error) {
-        console.error(error);
-        setDocs([]);
-      } else {
-        setDocs(data ?? []);
-      }
-
-      setLoading(false);
-    };
-
-    fetchDocs();
-  }, []);
-
+  const { data, isPending } = useFeaturedDocuments();
+  const docs = data || [];
   const featuredDocs = docs.slice(0, 4);
+  console.log('my data', data)
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -103,7 +78,7 @@ const Index = () => {
         <div className="mb-8 flex items-end justify-between">
           <div>
             <h2 className="text-3xl font-bold text-foreground">
-              Featured Materials
+              Featured Resources
             </h2>
             <p className="mt-1 text-muted-foreground">
               Recently added study resources
@@ -118,9 +93,9 @@ const Index = () => {
           </Link>
         </div>
 
-        {loading ? (
+        {isPending ? (
           <div className="text-center py-10 text-muted-foreground">
-            Loading materials…
+            <Loader2 className="animate-spin"/>
           </div>
         ) : featuredDocs.length > 0 ? (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

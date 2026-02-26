@@ -30,3 +30,13 @@ export const fetchDocumentById = async (id:string) => {
   if (error) throw new Error(error.message);
   return data;
 };
+
+export const fetchFeaturedDocuments = async () => {
+  const { data, error } = await supabase
+        .from("documents")
+        .select("*")
+        .limit(8);
+
+  if (error) throw new Error(error.message);
+  return data;
+};

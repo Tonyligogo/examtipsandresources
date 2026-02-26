@@ -12,32 +12,27 @@ interface AuthContextType {
   user: AppUser | null;
   login: (email: string, password: string) => Promise<void>;
   signup: (email: string, password: string) => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 async function buildAppUser(supabaseUser: SupabaseUser): Promise<AppUser> {
-  // Check role
-  const { data: roles } = await supabase
+  const { data, error } = await supabase
     .from("user_roles")
     .select("role")
-    .eq("user_id", supabaseUser.id);
-
-  const isAdmin = roles?.some((r: unknown) => (r as { role: string }).role === "admin") ?? false;
-
-  // Get profile
-  await supabase
-    .from("profiles")
-    .select("email")
     .eq("user_id", supabaseUser.id)
-    .single();
+    .maybeSingle();
+
+  if (error) {
+    console.error("Role fetch failed:", error);
+  }
 
   return {
     id: supabaseUser.id,
     email: supabaseUser.email ?? "",
-    role: isAdmin ? "admin" : "user",
+    role: data?.role === "admin" ? "admin" : "user",
   };
 }
 
@@ -46,28 +41,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        if (session?.user) {
-          const appUser = await buildAppUser(session.user);
-          setUser(appUser);
-        } else {
-          setUser(null);
-        }
-        setIsLoading(false);
-      }
-    );
+  const init = async () => {
+    setIsLoading(true);
 
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
+    const { data: { session } } = await supabase.auth.getSession();
+
+    if (session?.user) {
+      const appUser = await buildAppUser(session.user);
+      setUser(appUser);
+    } else {
+      setUser(null);
+    }
+
+    setIsLoading(false);
+  };
+
+  init();
+
+  const { data: { subscription } } =
+    supabase.auth.onAuthStateChange(async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+
       if (session?.user) {
         const appUser = await buildAppUser(session.user);
         setUser(appUser);
+      } else {
+        setUser(null);
       }
+
       setIsLoading(false);
     });
 
-    return () => subscription.unsubscribe();
-  }, []);
+  return () => subscription.unsubscribe();
+}, []);
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
@@ -80,10 +86,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signup = async (email: string, password: string) => {
     setIsLoading(true);
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
+    const { error } = await supabase.auth.signUp({ email, password });
     if (error) {
       setIsLoading(false);
       throw error;
@@ -91,8 +94,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = async () => {
+    setIsLoading(true);
     await supabase.auth.signOut();
     setUser(null);
+    setIsLoading(false);
   };
 
   return (

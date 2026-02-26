@@ -26,20 +26,17 @@ const { user, logout } = useAuth();
           {user ? (
             <>
               {user.role === "admin" && (
-                <Link to="/dashboard" className="hidden items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:flex">
-                  <LayoutDashboard className="h-3.5 w-3.5" /> Dashboard
+                <Link to="/dashboard" className="items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:flex">
+                  <LayoutDashboard className="h-3.5 w-3.5" /> <span className="hidden md:block">Dashboard</span> 
                 </Link>
               )}
-              <div className="flex items-center gap-2">
-                <span className="hidden text-sm text-muted-foreground sm:block">Admin</span>
                 <button onClick={logout} className="flex h-9 w-9 items-center justify-center rounded-lg border bg-card transition-colors hover:bg-muted" title="Sign out">
                   <LogOut className="h-4 w-4 text-foreground" />
                 </button>
-              </div>
             </>
           ) : (
             <Link to="/login" className="inline-flex h-9 items-center gap-1.5 rounded-lg border bg-card px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted">
-              <User className="h-3.5 w-3.5" /> Sign In
+              <User className="h-3.5 w-3.5" /> <span className="hidden md:block">Sign In</span>
             </Link>
           )}
         </div>
