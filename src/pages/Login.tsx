@@ -1,17 +1,24 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BookOpen, LogIn } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 const Login = () => {
-  const [email, setEmail] = useState("student@demo.com");
-  const [password, setPassword] = useState("password");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Welcome back!");
-    navigate("/");
+    try {
+      await login(email, password);
+      toast.success("Welcome back!");
+      navigate("/");
+    } catch {
+      toast.error("Login failed");
+    }
   };
 
   return (
@@ -22,7 +29,7 @@ const Login = () => {
             <BookOpen className="h-6 w-6 text-primary-foreground" />
           </div>
           <h1 className="font-display text-2xl font-bold text-foreground">Welcome back</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Sign in to your StudyVault account</p>
+          <p className="mt-1 text-sm text-muted-foreground">Sign in to access your account</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -48,22 +55,13 @@ const Login = () => {
           </div>
           <button
             type="submit"
+            disabled={isLoading}
             className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-secondary font-medium text-secondary-foreground transition-all hover:brightness-110 disabled:opacity-60"
           >
             <LogIn className="h-4 w-4" />
-            "Sign In"
+            {isLoading ? "Signing in…" : "Sign In"}
           </button>
         </form>
-
-        <div className="mt-4 rounded-lg bg-muted p-3 text-xs text-muted-foreground">
-          <strong>Demo accounts:</strong><br />
-          student@demo.com / seller@demo.com (any password)
-        </div>
-
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          Don't have an account?{" "}
-          <Link to="/signup" className="font-medium text-secondary hover:underline">Sign up</Link>
-        </p>
       </div>
     </div>
   );

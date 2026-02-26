@@ -1,19 +1,24 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BookOpen, UserPlus } from "lucide-react";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 const Signup = () => {
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<"buyer" | "seller">("buyer");
+  const { signup, isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Account created!");
-    navigate("/");
+    try {
+      await signup(email, password);
+      toast.success("Account created! Please check your email to verify your account.");
+      navigate("/login");
+    } catch{
+      toast.error("Signup failed");
+    }
   };
 
   return (
@@ -28,16 +33,6 @@ const Signup = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">Full name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="h-11 w-full rounded-lg border bg-background px-3 text-sm text-foreground outline-none ring-ring focus:ring-2"
-              required
-            />
-          </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-foreground">Email</label>
             <input
@@ -59,38 +54,15 @@ const Signup = () => {
               minLength={6}
             />
           </div>
-          <div>
-            <label className="mb-1.5 block text-sm font-medium text-foreground">I want to</label>
-            <div className="grid grid-cols-2 gap-2">
-              {(["buyer", "seller"] as const).map((r) => (
-                <button
-                  key={r}
-                  type="button"
-                  onClick={() => setRole(r)}
-                  className={`h-11 rounded-lg border text-sm font-medium transition-colors ${
-                    role === r
-                      ? "border-secondary bg-secondary/10 text-foreground"
-                      : "bg-background text-muted-foreground hover:bg-muted"
-                  }`}
-                >
-                  {r === "buyer" ? "Buy materials" : "Sell materials"}
-                </button>
-              ))}
-            </div>
-          </div>
           <button
             type="submit"
+            disabled={isLoading}
             className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-secondary font-medium text-secondary-foreground transition-all hover:brightness-110 disabled:opacity-60"
           >
             <UserPlus className="h-4 w-4" />
-             "Create Account"
+            {isLoading ? "Creating…" : "Create Account"}
           </button>
         </form>
-
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          Already have an account?{" "}
-          <Link to="/login" className="font-medium text-secondary hover:underline">Sign in</Link>
-        </p>
       </div>
     </div>
   );

@@ -1,9 +1,10 @@
 import { Link } from "react-router-dom";
-import { BookOpen} from "lucide-react";
+import { BookOpen, LayoutDashboard, LogOut, User} from "lucide-react";
 import CartDrawer from "./CartDrawer";
+import { useAuth } from "@/context/AuthContext";
 
 const Navbar = () => {
-
+const { user, logout } = useAuth();
   return (
     <nav className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
       <div className="px-6 lg:px-16 flex h-16 items-center justify-between">
@@ -22,6 +23,25 @@ const Navbar = () => {
             Browse
           </Link>
           <CartDrawer />
+          {user ? (
+            <>
+              {user.role === "admin" && (
+                <Link to="/dashboard" className="hidden items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground sm:flex">
+                  <LayoutDashboard className="h-3.5 w-3.5" /> Dashboard
+                </Link>
+              )}
+              <div className="flex items-center gap-2">
+                <span className="hidden text-sm text-muted-foreground sm:block">Admin</span>
+                <button onClick={logout} className="flex h-9 w-9 items-center justify-center rounded-lg border bg-card transition-colors hover:bg-muted" title="Sign out">
+                  <LogOut className="h-4 w-4 text-foreground" />
+                </button>
+              </div>
+            </>
+          ) : (
+            <Link to="/login" className="inline-flex h-9 items-center gap-1.5 rounded-lg border bg-card px-3 text-sm font-medium text-foreground transition-colors hover:bg-muted">
+              <User className="h-3.5 w-3.5" /> Sign In
+            </Link>
+          )}
         </div>
       </div>
     </nav>

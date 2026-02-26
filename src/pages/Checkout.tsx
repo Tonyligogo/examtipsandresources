@@ -2,11 +2,53 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { documents } from "@/lib/data";
+import { useEffect, useState } from "react";
+import { supabase } from "@/supabase/client";
+import { toast } from "sonner";
+import type { Document } from "@/lib/data";
 
 const Checkout = () => {
   const { id } = useParams();
-  const doc = documents.find((d) => d.id === id);
+  const [doc, setDoc] = useState<Document | null>(null);
+    const [loading, setLoading] = useState(false);
+   useEffect(() => {
+    if (!id) return;
+
+    const fetchDoc = async () => {
+      setLoading(true);
+
+      const { data, error } = await supabase
+        .from("documents")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      if (error) {
+        console.error(error);
+        toast.error("Failed to load document");
+        setDoc(null);
+        setLoading(false);
+      } else {
+        setDoc(data);
+        setLoading(false);
+      }
+
+    };
+
+    fetchDoc();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <Navbar />
+        <div className="flex flex-1 items-center justify-center text-muted-foreground">
+          Loading document…
+        </div>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!doc) {
     return (
