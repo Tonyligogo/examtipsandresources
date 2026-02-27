@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import type { User as SupabaseUser } from "@supabase/supabase-js";
+import type { User as SupabaseUser, Session } from "@supabase/supabase-js";
 import { supabase } from "@/supabase/client";
 
 interface AppUser {
@@ -36,68 +36,45 @@ async function buildAppUser(supabaseUser: SupabaseUser): Promise<AppUser> {
   };
 }
 
+async function handleSession(session: Session | null): Promise<AppUser | null> {
+  if (!session?.user) return null;
+  return await buildAppUser(session.user);
+}
+
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AppUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-  const init = async () => {
-    setIsLoading(true);
-
-    const { data: { session } } = await supabase.auth.getSession();
-
-    if (session?.user) {
-      const appUser = await buildAppUser(session.user);
-      setUser(appUser);
-    } else {
-      setUser(null);
-    }
-
-    setIsLoading(false);
-  };
-
-  init();
-
-  const { data: { subscription } } =
-    supabase.auth.onAuthStateChange(async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-
-      if (session?.user) {
-        const appUser = await buildAppUser(session.user);
+    // onAuthStateChange fires immediately with the current session,
+    // so we don't need a separate getSession() call at all.
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (_event, session) => {
+        setIsLoading(true);
+        const appUser = await handleSession(session);
         setUser(appUser);
-      } else {
-        setUser(null);
+        setIsLoading(false);
       }
+    );
 
-      setIsLoading(false);
-    });
-
-  return () => subscription.unsubscribe();
-}, []);
+    return () => subscription.unsubscribe();
+  }, []);
 
   const login = async (email: string, password: string) => {
-    setIsLoading(true);
+    // Don't touch isLoading here — let onAuthStateChange handle it.
     const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      setIsLoading(false);
-      throw error;
-    }
+    if (error) throw error;
   };
 
   const signup = async (email: string, password: string) => {
-    setIsLoading(true);
     const { error } = await supabase.auth.signUp({ email, password });
-    if (error) {
-      setIsLoading(false);
-      throw error;
-    }
+    if (error) throw error;
   };
 
   const logout = async () => {
-    setIsLoading(true);
-    await supabase.auth.signOut();
-    setUser(null);
-    setIsLoading(false);
+    const { error } = await supabase.auth.signOut();
+    if (error) throw error;
+    // onAuthStateChange will fire with null session and set user to null
   };
 
   return (
