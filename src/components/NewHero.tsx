@@ -16,7 +16,7 @@ interface StatBadgeProps {
 
 const StatBadge = ({ icon, value, label, className = "" }: StatBadgeProps) => (
   <div
-    className={`flex items-center gap-3 bg-white/95 backdrop-blur-md rounded-2xl px-4 py-3 shadow-lg min-w-[140px] ${className}`}
+    className={`flex items-center gap-3 bg-white/95 backdrop-blur-md rounded-2xl px-4 py-3 shadow-lg min-w-35 ${className}`}
   >
     <div className="text-[#E8651A] shrink-0">{icon}</div>
     <div>
@@ -89,11 +89,11 @@ export default function HeroSection() {
         />
 
         {/* Content */}
-        <div className="relative z-10 w-full sm:max-w-[620px] px-6 py-16 sm:px-10 lg:pl-20">
+        <div className="relative z-10 w-full sm:max-w-155 px-6 py-16 sm:px-10 lg:pl-20">
 
           <Badge
             variant="secondary"
-            className="mb-5 text-xs font-semibold tracking-wide text-gray-500 bg-gray-100 border-0"
+            className="mb-5 text-xs font-semibold tracking-wide text-gray-800 bg-gray-100 border-0"
           >
             #1 Nursing Study Platform
           </Badge>
@@ -104,12 +104,12 @@ export default function HeroSection() {
             <span className="text-[#E8651A]">Exams &amp; Beyond</span>
           </h1>
 
-          <p className="text-base text-gray-500 leading-relaxed mb-9 max-w-[460px]">
+          <p className="text-base text-gray-800 leading-relaxed mb-9 max-w-115">
             Trusted revision notes, past papers, and clinical guides — everything nursing students need to pass exams and become confident practitioners.
           </p>
 
           {/* Search bar — stacked on mobile, pill on desktop */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-full shadow-md px-4 sm:px-6 py-3 sm:py-1.5 max-w-[500px] mb-10 gap-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center bg-white rounded-2xl sm:rounded-full shadow-md px-4 sm:px-6 py-3 sm:py-1.5 max-w-125 mb-10 gap-2">
             <Input
               type="text"
               placeholder='e.g. "Pharmacology", "Anatomy", "NCLEX"'
@@ -152,13 +152,13 @@ export default function HeroSection() {
         <div className="absolute bottom-6 left-6 right-6 flex gap-3 sm:hidden z-20">
           <StatBadge
             icon={<BookOpen className="h-5 w-5" />}
-            value="500+"
+            value="20+"
             label="Study Guides"
             className="flex-1"
           />
           <StatBadge
             icon={<GraduationCap className="h-5 w-5" />}
-            value="2,000+"
+            value="100+"
             label="Nursing Students"
             className="flex-1"
           />
