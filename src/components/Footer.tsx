@@ -1,63 +1,129 @@
-import { BookOpen, Mail, MessageCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Mail, MessageCircle, GraduationCap, BookMarked, HelpCircle } from "lucide-react";
 
 const Footer = () => {
-  const supportMessage = encodeURIComponent(
-    "Hi, I need help with a document purchase."
-  );
-
+  const supportMessage = encodeURIComponent("Hi, I need help with a document purchase.");
   const whatsappNumber = "+19144317855";
   const supportEmail = "stephanoouma254@gmail.com";
-
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${supportMessage}`;
   const emailUrl = `mailto:${supportEmail}?subject=Support Request&body=${supportMessage}`;
 
   return (
-    <footer className="border-t bg-card">
-      <div className="px-6 lg:px-16 py-10">
-        <div className="flex flex-col gap-10 md:gap-6 md:flex-row md:items-center md:justify-between">
-          
-          {/* Brand */}
-          <div className="flex items-center justify-center md:justify-normal gap-2">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <BookOpen className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <span className="font-display text-lg text-foreground">
-              EXAM TIPS & RESOURCES
-            </span>
-          </div>
+    <footer className="bg-orange-50/60">
 
-          {/* Support */}
-          <div className="flex flex-col md:flex-row items-center gap-2 md:gap-5">
-            <p className="text-lg font-medium">
-              Need help? Contact support
+      {/* Main footer content */}
+      <div className="px-6 lg:px-16 py-14">
+        <div className="max-w-7xl mx-auto grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+
+          {/* Brand column */}
+          <div className="lg:col-span-2">
+            <div className="mb-4">
+              <span className="font-display text-lg font-bold tracking-wide">
+                Exam Tips & Resources
+              </span>
+            </div>
+            <p className="text-sm text-gray-600 leading-relaxed max-w-xs">
+              Your go-to platform for nursing exam preparation. Expert-curated notes, past papers, and clinical guides to help you pass and become a confident practitioner.
             </p>
 
-            <div className="flex gap-3">
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 rounded-sm bg-green-600 px-4 py-2 text-md font-medium text-white transition hover:opacity-90"
-              >
-                <MessageCircle className="h-4 w-4" />
-                WhatsApp
-              </a>
-
-              <a
-                href={emailUrl}
-                className="flex items-center gap-2 rounded-sm bg-secondary px-4 py-2 text-md font-medium text-secondary-foreground transition hover:bg-primary hover:text-white"
-              >
-                <Mail className="h-4 w-4" />
-                Email
-              </a>
+            {/* Support buttons */}
+            <div className="mt-6">
+              <p className="text-xs font-semibold uppercase tracking-widest text-gray-800 mb-3">
+                Need help?
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-green-600 px-4 py-2 text-sm font-semibold text-white"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  WhatsApp
+                </a>
+                <a
+                  href={emailUrl}
+                  className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold"
+                >
+                  <Mail className="h-4 w-4" />
+                  Email Us
+                </a>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="mt-10 text-center">
-          <p className="text-sm text-muted-foreground">
-            © 2026 EXAM TIPS & RESOURCES. All rights reserved.
-          </p>
+          {/* Quick links */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-gray-800 mb-4">
+              Study
+            </p>
+            <ul className="space-y-2.5">
+              {[
+                { label: "Browse All Materials", to: "/catalog", icon: BookMarked },
+                { label: "Pharmacology", to: "/catalog?subject=Pharmacology", icon: GraduationCap },
+                { label: "Anatomy & Physiology", to: "/catalog?subject=Anatomy", icon: GraduationCap },
+                { label: "Medical-Surgical", to: "/catalog?subject=Medical-Surgical", icon: GraduationCap },
+                { label: "Critical Care", to: "/catalog?subject=Critical Care", icon: GraduationCap },
+              ].map(({ label, to, icon: Icon }) => (
+                <li key={label}>
+                  <Link
+                    to={to}
+                    className="flex items-center gap-2 text-sm text-gray-600 transition hover:text-[#E8651A]"
+                  >
+                    <Icon className="h-3.5 w-3.5 shrink-0" />
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Support links */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-gray-800 mb-4">
+              Support
+            </p>
+            <ul className="space-y-2.5">
+              {[
+                { label: "Contact Support", href: whatsappUrl, external: true },
+                { label: "Email Support", href: emailUrl, external: true },
+                { label: "Browse Catalog", href: "/catalog", external: false },
+              ].map(({ label, href, external }) => (
+                <li key={label}>
+                  {external ? (
+                    <a
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-sm text-gray-600 transition hover:text-[#E8651A]"
+                    >
+                      <HelpCircle className="h-3.5 w-3.5 shrink-0" />
+                      {label}
+                    </a>
+                  ) : (
+                    <Link
+                      to={href}
+                      className="flex items-center gap-2 text-sm text-gray-600 transition hover:text-[#E8651A]"
+                    >
+                      <HelpCircle className="h-3.5 w-3.5 shrink-0" />
+                      {label}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div className="border-t border-white/5 px-6 lg:px-16 py-5">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-600">
+          <p>© 2026 Exam Tips & Resources. All rights reserved.</p>
+          <div className="flex items-center gap-1.5">
+            <div className="h-2 w-2 rounded-full bg-[#E8651A]" />
+            <span>Built for nursing students around the world</span>
+          </div>
         </div>
       </div>
     </footer>

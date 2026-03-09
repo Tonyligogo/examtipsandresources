@@ -20,18 +20,12 @@ export type Database = {
           created_at: string
           description: string | null
           doc_type: string
-          file_url: string | null
           id: string
           pages: number | null
-          preview_url: string | null
+          preview_urls: string[] | null
           price: number
-          rating: number | null
-          reviews: number | null
-          status: string
           subject: string
-          thumbnail_url: string | null
           title: string
-          university: string | null
           updated_at: string
         }
         Insert: {
@@ -39,18 +33,12 @@ export type Database = {
           created_at?: string
           description?: string | null
           doc_type?: string
-          file_url?: string | null
           id?: string
           pages?: number | null
-          preview_url?: string | null
+          preview_urls?: string[] | null
           price?: number
-          rating?: number | null
-          reviews?: number | null
-          status?: string
           subject?: string
-          thumbnail_url?: string | null
           title: string
-          university?: string | null
           updated_at?: string
         }
         Update: {
@@ -58,21 +46,79 @@ export type Database = {
           created_at?: string
           description?: string | null
           doc_type?: string
-          file_url?: string | null
           id?: string
           pages?: number | null
-          preview_url?: string | null
+          preview_urls?: string[] | null
           price?: number
-          rating?: number | null
-          reviews?: number | null
-          status?: string
           subject?: string
-          thumbnail_url?: string | null
           title?: string
-          university?: string | null
           updated_at?: string
         }
         Relationships: []
+      }
+      institutions: {
+        Row: {
+          author_id: string
+          created_at: string
+          id: string
+          title: string
+        }
+        Insert: {
+          author_id?: string
+          created_at?: string
+          id?: string
+          title: string
+        }
+        Update: {
+          author_id?: string
+          created_at?: string
+          id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "institutions_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      packages: {
+        Row: {
+          author_id: string
+          created_at: string
+          description: string | null
+          id: string
+          price: number
+          title: string
+        }
+        Insert: {
+          author_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          price?: number
+          title: string
+        }
+        Update: {
+          author_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          price?: number
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "packages_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       profiles: {
         Row: {
@@ -98,6 +144,42 @@ export type Database = {
         }
         Relationships: []
       }
+      package_documents: {
+  Row: {
+    id: string
+    package_id: string
+    document_id: string
+    created_at: string
+  }
+  Insert: {
+    id?: string
+    package_id: string
+    document_id: string
+    created_at?: string
+  }
+  Update: {
+    id?: string
+    package_id?: string
+    document_id?: string
+    created_at?: string
+  }
+  Relationships: [
+    {
+      foreignKeyName: "package_documents_package_id_fkey"
+      columns: ["package_id"]
+      isOneToOne: false
+      referencedRelation: "packages"
+      referencedColumns: ["id"]
+    },
+    {
+      foreignKeyName: "package_documents_document_id_fkey"
+      columns: ["document_id"]
+      isOneToOne: false
+      referencedRelation: "documents"
+      referencedColumns: ["id"]
+    }
+  ]
+}
       user_roles: {
         Row: {
           id: string

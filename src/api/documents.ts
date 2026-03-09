@@ -3,7 +3,15 @@ import { supabase } from "@/supabase/client";
 export const fetchAdminDocuments = async (userId: string) => {
   const { data, error } = await supabase
     .from("documents")
-    .select("*")
+    .select(`
+  *,
+  package_documents(
+      packages(
+        id,
+        title
+      )
+    )
+`)
     .eq("author_id", userId)
     .order("created_at", { ascending: false });
 
@@ -14,7 +22,15 @@ export const fetchAdminDocuments = async (userId: string) => {
 export const fetchAllDocuments = async () => {
   const { data, error } = await supabase
     .from("documents")
-    .select("*");
+    .select(`
+  *,
+  package_documents(
+      packages(
+        id,
+        title
+      )
+    )
+`)
 
   if (error) throw new Error(error.message);
   return data;

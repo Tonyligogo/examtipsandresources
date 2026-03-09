@@ -4,6 +4,7 @@ import type { Document } from "@/lib/data";
 interface CartItem {
   document: Document;
   addedAt: number;
+  packageId?:string;
 }
 
 interface CartContextType {
@@ -12,6 +13,7 @@ interface CartContextType {
   removeItem: (docId: string) => void;
   clearCart: () => void;
   isInCart: (docId: string) => boolean;
+  addPackage: (docs: Document[], packageId: string) => void;
   total: number;
   itemCount: number;
 }
@@ -39,11 +41,29 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     [items]
   );
 
+  const addPackage = useCallback((docs: Document[], packageId: string) => {
+  setItems((prev) => {
+    const newItems = [...prev];
+
+    docs.forEach((doc) => {
+      if (!newItems.some((i) => i.document.id === doc.id)) {
+        newItems.push({
+          document: doc,
+          packageId,
+          addedAt: Date.now(),
+        });
+      }
+    });
+
+    return newItems;
+  });
+}, []);
+  
   const total = items.reduce((sum, i) => sum + i.document.price, 0);
   const itemCount = items.length;
 
   return (
-    <CartContext.Provider value={{ items, addItem, removeItem, clearCart, isInCart, total, itemCount }}>
+    <CartContext.Provider value={{ items, addItem, addPackage, removeItem, clearCart, isInCart, total, itemCount }}>
       {children}
     </CartContext.Provider>
   );

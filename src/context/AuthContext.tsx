@@ -43,7 +43,7 @@ async function handleSession(session: Session | null): Promise<AppUser | null> {
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<AppUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     // onAuthStateChange fires immediately with the current session,
@@ -52,6 +52,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       async (_event, session) => {
         setIsLoading(true);
         const appUser = await handleSession(session);
+        console.log(appUser)
         setUser(appUser);
         setIsLoading(false);
       }
@@ -61,7 +62,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const login = async (email: string, password: string) => {
-    // Don't touch isLoading here — let onAuthStateChange handle it.
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
   };
@@ -74,7 +74,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
-    // onAuthStateChange will fire with null session and set user to null
   };
 
   return (

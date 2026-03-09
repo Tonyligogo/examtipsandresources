@@ -14,6 +14,7 @@ import { CartProvider } from "./context/CartContext";
 import CartCheckout from "./pages/CartCheckout";
 import { AuthProvider } from "./context/AuthContext";
 import Dashboard from "./pages/Dashboard";
+import PackagesPage from "./pages/PackagesPage";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/catalog" element={<Catalog />} />
+              <Route path="/packages" element={<PackagesPage />} />
               <Route path="/document/:id" element={<DocumentDetail />} />
               <Route path="/checkout/:id" element={<Checkout />} />
               <Route path="/cart-checkout" element={<CartCheckout />} />
