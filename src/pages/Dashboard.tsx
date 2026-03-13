@@ -220,7 +220,7 @@ const Dashboard = () => {
             <h1 className="font-display text-2xl font-bold text-foreground">Dashboard</h1>
             <p className="text-sm text-muted-foreground">Welcome, {user.email}</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-2">
             <button
               type="button"
               onClick={() => setShowUpload(true)}

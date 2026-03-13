@@ -11,10 +11,11 @@ const AuthWrapper = ({children}:{children:React.ReactNode}) => {
     const getSession = async () =>{
         const { data:{session} } = await supabase.auth.getSession();
         setAuthenticated(!!session);
-        setLoading(false);
+        setLoading(false);        
     }
     getSession();
   },[]);
+  console.log(loading)
 
     if(loading){
         return <Loader2 className="animate-spin" />;
