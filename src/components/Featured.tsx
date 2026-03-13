@@ -66,8 +66,7 @@ const InstitutionsTicker = ({ institutions }: { institutions: { id: string; titl
 // ── Featured Section ───────────────────────────────────────────────────────────
 const FeaturedSection = () => {
   const { data: documents = [], isPending } = useAllDocuments();
-  const { data: institutions = [] } = useInstitutions();
-  console.log(institutions)
+  const { data: institutions } = useInstitutions();
 
   const featuredDocs = documents
     .slice()
@@ -130,7 +129,7 @@ const FeaturedSection = () => {
         </div>
 
         {/* Institutions ticker — only shown when there are institutions */}
-        {institutions.length > 0 && (
+        {institutions && institutions.length > 0 && (
           <InstitutionsTicker institutions={institutions} />
         )}
       </div>

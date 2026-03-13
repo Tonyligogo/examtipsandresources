@@ -1,21 +1,28 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BookOpen, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/supabase/client";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login, isLoading } = useAuth();
+  const { isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(email, password);
-      toast.success("Welcome back!");
-      navigate("/");
+      // await login(email, password);
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if(error){
+        toast.error("Login failed");
+        return;
+      }
+      if(data){
+        navigate("/");
+      }
     } catch {
       toast.error("Login failed");
     }
@@ -62,6 +69,9 @@ const Login = () => {
             {isLoading ? "Signing in…" : "Sign In"}
           </button>
         </form>
+        <Link to="/" className="mt-4 block text-center text-sm text-muted-foreground">
+          Go to home page
+        </Link>
       </div>
     </div>
   );

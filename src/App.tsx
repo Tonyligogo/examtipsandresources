@@ -8,13 +8,13 @@ import Catalog from "./pages/Catalog";
 import DocumentDetail from "./pages/DocumentDetail";
 import Checkout from "./pages/Checkout";
 import Login from "./pages/Login";
-import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
 import { CartProvider } from "./context/CartContext";
 import CartCheckout from "./pages/CartCheckout";
 import { AuthProvider } from "./context/AuthContext";
 import Dashboard from "./pages/Dashboard";
 import PackagesPage from "./pages/PackagesPage";
+import AuthWrapper from "./components/AuthWrapper";
 
 const queryClient = new QueryClient();
 
@@ -34,8 +34,11 @@ const App = () => (
               <Route path="/checkout/:id" element={<Checkout />} />
               <Route path="/cart-checkout" element={<CartCheckout />} />
               <Route path="/login" element={<Login />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard" element={
+                <AuthWrapper>
+                  <Dashboard />
+                </AuthWrapper>
+                } />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>

@@ -1,10 +1,9 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FileText, Trash2, Plus, Building2, Package } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
-import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/supabase/client";
 import DocumentCard from "@/components/DocumentCard";
 import { useAdminDocuments } from "@/hooks/useDocuments";
@@ -13,6 +12,7 @@ import { useInstitutions } from "@/hooks/useInstitutions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import CreatePackageModal from "@/components/CreatePackageModal";
 import CreateInstitutionModal from "@/components/CreateInstitution";
+import type { Session } from "@supabase/supabase-js";
 
 interface FileInputProps {
   label: string;
@@ -81,7 +81,19 @@ const FileInput = ({ label, files, setFiles }: FileInputProps) => {
 
 // ── Dashboard ──────────────────────────────────────────────────────────────────
 const Dashboard = () => {
-  const { user } = useAuth();
+  const [authenticatedUser, setAuthenticatedUser] = useState<Session|null>(null);
+  const navigate = useNavigate();
+  useEffect(()=>{
+      const getSession = async () =>{
+          const { data:{session} } = await supabase.auth.getSession();
+          if(!session || !session.user){
+            navigate('/');
+          };
+          setAuthenticatedUser(session);
+      }
+      getSession();
+    },[]);
+    const user = authenticatedUser?.user;
   const { data: documents = [], isPending, refetch } = useAdminDocuments(user?.id);
   const { mutate: deletePkg } = useDeletePackage();
   const { data: packages = [], refetch: refetchPackages } = usePackages();
@@ -104,7 +116,6 @@ const Dashboard = () => {
   const [previewFiles, setPreviewFiles] = useState<File[]>([]);
   const [newDocType, setNewDocType] = useState("Notes");
   const [newPages, setNewPages] = useState("0");
-  console.log(docs)
 
   const slugify = (text: string) =>
     text.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -180,7 +191,7 @@ const Dashboard = () => {
     refetchInstitutions();
   };
 
-  if (!user || user.role !== "admin") {
+  if (!user || user.role !== "authenticated") {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <Navbar />

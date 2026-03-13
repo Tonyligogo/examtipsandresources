@@ -6,12 +6,11 @@ export const useInstitutions = () => {
   return useQuery({
     queryKey: ["institutions"],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("institutions")
         .select("*")
+        .throwOnError()
         .order("created_at", { ascending: false });
-
-      if (error) throw error;
 
       return data;
     },

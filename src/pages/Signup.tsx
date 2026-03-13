@@ -7,13 +7,13 @@ import { useAuth } from "@/context/AuthContext";
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { signup, isLoading } = useAuth();
+  const { isLoading } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await signup(email, password);
+      // await signup(email, password);
       toast.success("Account created! Please check your email to verify your account.");
       navigate("/login");
     } catch{

@@ -11,7 +11,7 @@ interface AppUser {
 interface AuthContextType {
   user: AppUser | null;
   login: (email: string, password: string) => Promise<void>;
-  signup: (email: string, password: string) => Promise<void>;
+  // signup: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   isLoading: boolean;
 }
@@ -52,7 +52,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       async (_event, session) => {
         setIsLoading(true);
         const appUser = await handleSession(session);
-        console.log(appUser)
         setUser(appUser);
         setIsLoading(false);
       }
@@ -66,10 +65,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (error) throw error;
   };
 
-  const signup = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signUp({ email, password });
-    if (error) throw error;
-  };
+  // const signup = async (email: string, password: string) => {
+  //   const { error } = await supabase.auth.signUp({ email, password });
+  //   if (error) throw error;
+  // };
 
   const logout = async () => {
     const { error } = await supabase.auth.signOut();
@@ -77,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, isLoading }}>
+    <AuthContext.Provider value={{ user, login, logout, isLoading }}>
       {children}
     </AuthContext.Provider>
   );

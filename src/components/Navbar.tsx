@@ -1,7 +1,10 @@
-import { Link, NavLink } from "react-router-dom";
-import { LayoutDashboard, LogOut, User, Search } from "lucide-react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { LayoutDashboard, LogOut, User } from "lucide-react";
 import CartDrawer from "./CartDrawer";
-import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/supabase/client";
+import { useEffect, useState } from "react";
+import type { Session } from "@supabase/supabase-js";
+import { toast } from "sonner";
 
 /* Reusable NavLink styling */
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
@@ -12,7 +15,25 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   }`;
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const [user, setUser] = useState<Session|null>(null);
+  const navigate = useNavigate();
+    useEffect(()=>{
+        const getSession = async () =>{
+            const { data:{session} } = await supabase.auth.getSession();
+            setUser(session);
+        }
+        getSession();
+      },[]);
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+      if (error) {
+        toast.error('Failed to signout')
+      } else {
+        setUser(null);
+        navigate('/');
+      }
+  }
 
   return (
     <nav className="sticky top-0 z-50 h-17.5 border-b border-gray-100 bg-white">
@@ -43,29 +64,24 @@ export default function Navbar() {
         {/* Right Side */}
         <div className="flex items-center gap-4">
 
-          {/* Search */}
-          <button className="flex h-9 w-9 items-center justify-center rounded-md hover:bg-gray-100 transition">
-            <Search className="h-4 w-4 text-gray-700" />
-          </button>
-
           {/* Cart */}
           <CartDrawer />
 
           {/* Auth */}
           {user ? (
             <>
-              {user.role === "admin" && (
+              {user && (
                 <Link
-                  to="/dashboard"
-                  className="hidden sm:flex items-center gap-1.5 text-sm font-medium text-gray-600 hover:text-gray-900"
-                >
-                  <LayoutDashboard className="h-4 w-4" />
-                  Dashboard
-                </Link>
+              to="/dashboard"
+              className="flex items-center gap-1.5 rounded-md border px-3 py-2 text-sm font-medium hover:bg-gray-100 transition"
+            >
+              <LayoutDashboard className="h-4 w-4" />
+              <span className="hidden sm:block">Dashboard</span>
+            </Link>
               )}
 
               <button
-                onClick={logout}
+                onClick={handleLogout}
                 title="Sign out"
                 className="flex h-9 w-9 items-center justify-center rounded-md border bg-white hover:bg-gray-100 transition"
               >
