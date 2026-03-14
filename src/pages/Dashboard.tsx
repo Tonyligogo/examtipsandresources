@@ -12,7 +12,7 @@ import { useInstitutions } from "@/hooks/useInstitutions";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import CreatePackageModal from "@/components/CreatePackageModal";
 import CreateInstitutionModal from "@/components/CreateInstitution";
-import type { Session } from "@supabase/supabase-js";
+import type { User } from "@supabase/supabase-js";
 
 interface FileInputProps {
   label: string;
@@ -81,19 +81,19 @@ const FileInput = ({ label, files, setFiles }: FileInputProps) => {
 
 // ── Dashboard ──────────────────────────────────────────────────────────────────
 const Dashboard = () => {
-  const [authenticatedUser, setAuthenticatedUser] = useState<Session|null>(null);
+  const [user, setUser] = useState<User|null>(null);
   const navigate = useNavigate();
   useEffect(()=>{
-      const getSession = async () =>{
-          const { data:{session} } = await supabase.auth.getSession();
-          if(!session || !session.user){
+      const getUser = async () =>{
+          const { data: { user } } = await supabase.auth.getUser()
+          console.log('my user',user)
+          if(!user){
             navigate('/');
           };
-          setAuthenticatedUser(session);
+          setUser(user);
       }
-      getSession();
+      getUser();
     },[]);
-    const user = authenticatedUser?.user;
   const { data: documents = [], isPending, refetch } = useAdminDocuments(user?.id);
   const { mutate: deletePkg } = useDeletePackage();
   const { data: packages = [], refetch: refetchPackages } = usePackages();

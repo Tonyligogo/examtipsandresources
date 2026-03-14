@@ -2,29 +2,32 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { BookOpen, LogIn } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/context/AuthContext";
 import { supabase } from "@/supabase/client";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { isLoading } = useAuth();
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
       // await login(email, password);
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
       if(error){
         toast.error("Login failed");
+        setIsLoading(false);
         return;
       }
       if(data){
+        setIsLoading(false);
         navigate("/");
       }
     } catch {
       toast.error("Login failed");
+      setIsLoading(false);
     }
   };
 

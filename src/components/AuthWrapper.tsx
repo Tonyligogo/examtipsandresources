@@ -9,8 +9,8 @@ const AuthWrapper = ({children}:{children:React.ReactNode}) => {
 
   useEffect(()=>{
     const getSession = async () =>{
-        const { data:{session} } = await supabase.auth.getSession();
-        setAuthenticated(!!session);
+        const { data: { user } } = await supabase.auth.getUser()
+        setAuthenticated(!!user);
         setLoading(false);        
     }
     getSession();
